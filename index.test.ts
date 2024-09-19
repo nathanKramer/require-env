@@ -1,4 +1,4 @@
-import { requireEnv, requireEnvVar, num, bool } from "./index";
+import { requireEnv, requireEnvVar, num, bool, positiveInteger } from "./index";
 
 describe("requireEnv", () => {
   const originalEnv = process.env;
@@ -105,6 +105,40 @@ describe("requireEnvVar", () => {
       "Error resolving environment variable INVALID_NUM, Error: Invalid number: not_a_number"
     );
   });
+
+  describe("default values", () => {
+    it("should use the environment variable value when set", () => {
+      process.env.TEST_VALUE = "Bar";
+      const config = requireEnv({
+        testValue: ["TEST_VALUE", { defaultValue: "Foo" }],
+      });
+      expect(config).toEqual({ testValue: "Bar" });
+    });
+
+    it("should use a default value when the environment variable is not set", () => {
+      process.env.TEST_VALUE = undefined;
+      const config = requireEnv({
+        testValue: ["TEST_VALUE", { defaultValue: "Foo" }],
+      });
+      expect(config).toEqual({ testValue: "Foo" });
+    });
+
+    it("should support default values with parsers", () => {
+      process.env.TEST_NUMBER = undefined;
+      const config = requireEnv({
+        testNumber: ["TEST_NUMBER", { defaultValue: 3000, parser: num }],
+      });
+      expect(config).toEqual({ testNumber: 3000 });
+    });
+
+    it("should use the environment variable value if present when parsing", () => {
+      process.env.TEST_NUMBER = "42";
+      const config = requireEnv({
+        testNumber: ["TEST_NUMBER", { defaultValue: 3000, parser: num }],
+      });
+      expect(config).toEqual({ testNumber: 42 });
+    });
+  });
 });
 
 describe("num", () => {
@@ -115,6 +149,30 @@ describe("num", () => {
 
   it("should throw an error for invalid number strings", () => {
     expect(() => num("not_a_number")).toThrow("Invalid number: not_a_number");
+  });
+});
+
+describe("positiveInteger", () => {
+  it("should convert a valid positive integer string to a number", () => {
+    expect(positiveInteger("42")).toBe(42);
+  });
+
+  it("should throw an error for non-integer strings", () => {
+    expect(() => positiveInteger("42.353")).toThrow(
+      "Invalid positive integer: 42.353"
+    );
+  });
+
+  it("should throw an error for non-integer strings", () => {
+    expect(() => positiveInteger("-42")).toThrow(
+      "Invalid positive integer: -42"
+    );
+  });
+
+  it("should throw an error for invalid positive integer strings", () => {
+    expect(() => positiveInteger("not_a_positive_integer")).toThrow(
+      "Invalid positive integer: not_a_positive_integer"
+    );
   });
 });
 
