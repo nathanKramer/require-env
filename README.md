@@ -15,7 +15,7 @@ const config = requireEnv({
 })
 ```
 
-E.g getting postgres credentials:
+E.g getting DB credentials:
 
 ```ts
 const config = requireEnv({
