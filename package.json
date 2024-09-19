@@ -1,6 +1,6 @@
 {
   "name": "@nathan.kramer/require-env",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Easily create config objects from environment variables",
   "repository": {
     "type": "git",

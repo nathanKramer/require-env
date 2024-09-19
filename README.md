@@ -50,7 +50,7 @@ const config = requireEnv({
 These are just for convenience. They will error on invalid values.
 
 ```ts
-import { requireEnv, num, bool } from '@nathan.kramer/require-env';
+import { requireEnv, num, bool, positiveInteger } from '@nathan.kramer/require-env';
 
 const config = requireEnv({
   someNum: ["REQUIRED_NUMBER_VALUE", num],
