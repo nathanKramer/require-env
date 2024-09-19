@@ -1,6 +1,6 @@
 {
   "name": "@nathan.kramer/require-env",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "description": "Easily create config objects from environment variables",
   "repository": {
     "type": "git",
@@ -33,5 +33,14 @@
     "dist",
     "README.md",
     "LICENSE"
+  ],
+  "keywords": [
+    "env",
+    "environment",
+    "variables",
+    "config",
+    "require-env",
+    "require-env-var",
+    "dotenv"
   ]
 }
