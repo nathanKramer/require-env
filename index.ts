@@ -6,7 +6,7 @@ type Opts<ReturnValue> = {
 
 type TupleCase = [
   string,
-  Opts<unknown> | ((value: string) => unknown) | undefined,
+  Opts<unknown> | ((value: string) => unknown) | string | undefined,
 ];
 
 type EnvConfig = Record<string, string | TupleCase>;
@@ -44,6 +44,10 @@ export function requireEnv<T extends EnvConfig>(
 
 function resolveTupleCase(value: TupleCase) {
   const [envVar, opts] = value;
+
+  if (typeof opts === "string") {
+    return requireEnvVar(envVar, opts);
+  }
 
   const converter = typeof opts === "function" ? opts : opts?.parser;
 

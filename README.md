@@ -13,7 +13,7 @@ const config = requireEnv({
   password: "DB_PASS",
   database: "DB_NAME",
   port: ["DB_PORT", positiveInteger],
-})
+});
 ```
 
 ## Install
@@ -40,7 +40,8 @@ import { requireEnv } from '@nathan.kramer/require-env';
 const config = requireEnv({
   someString: "REQUIRED_STRING_VALUE",
   someNum: ["REQUIRED_NUMBER_VALUE", parseInt],
-  someOptionalValue: ["OPTIONAL_VALUE", { parser: Boolean, optional: true }],
+  someOptionalValue: ["OPTIONAL_VALUE", { optional: true }],
+  valueWithDefault: ["VALUE_WITH_DEFAULT", "default value"],
 });
 ```
 
@@ -70,6 +71,7 @@ const value = requireEnvVar("SOME_ENV_VAR", "default value");
 import { requireEnv } from '@nathan.kramer/require-env';
 
 const config = requireEnv({
-  someValue: ["SOME_VALUE", { defaultValue: "default value" }],
+  someValue: ["SOME_VALUE", "default value"],
+  someOtherValue: ["SOME_INT", { parser: parseInt, defaultValue: 123 }],
 });
 ```

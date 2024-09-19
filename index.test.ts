@@ -107,6 +107,14 @@ describe("requireEnvVar", () => {
   });
 
   describe("default values", () => {
+    it("should support shorthand default values", () => {
+      process.env.TEST_VALUE = undefined;
+      const config = requireEnv({
+        testValue: ["TEST_VALUE", "Foo"],
+      });
+      expect(config).toEqual({ testValue: "Foo" });
+    });
+
     it("should use the environment variable value when set", () => {
       process.env.TEST_VALUE = "Bar";
       const config = requireEnv({
