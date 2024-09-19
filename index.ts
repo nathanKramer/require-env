@@ -2,10 +2,10 @@ type Opts = {
   optional?: boolean;
   parser?: (value: string) => unknown;
 };
-type EnvConfig = Record<
-  string,
-  string | [string, Opts | ((value: string) => unknown) | undefined]
->;
+
+type TupleCase = [string, Opts | ((value: string) => unknown) | undefined];
+
+type EnvConfig = Record<string, string | TupleCase>;
 
 /**
  * Creates an object with the same keys as the input config,
@@ -29,39 +29,43 @@ export function requireEnv<T extends EnvConfig>(
 
   for (const [key, value] of Object.entries(config)) {
     if (Array.isArray(value)) {
-      const [envVar, opts] = value;
-
-      const converter = typeof opts === "function" ? opts : opts?.parser;
-
-      let envValue;
-
-      if (typeof opts === "object" && opts?.optional) {
-        envValue = process.env[envVar];
-      } else {
-        envValue = requireEnvVar(envVar);
-      }
-
-      let resolvedValue;
-
-      if (converter) {
-        try {
-          resolvedValue = envValue ? converter(envValue) : undefined;
-        } catch (error) {
-          throw new Error(
-            `Error resolving environment variable ${envVar}, ${error}`
-          );
-        }
-      } else {
-        resolvedValue = envValue;
-      }
-
-      result[key] = resolvedValue;
+      result[key] = resolveTupleCase(value);
     } else {
       result[key] = requireEnvVar(value);
     }
   }
 
   return result;
+}
+
+function resolveTupleCase(value: TupleCase) {
+  const [envVar, opts] = value;
+
+  const converter = typeof opts === "function" ? opts : opts?.parser;
+
+  let envValue;
+
+  if (typeof opts === "object" && opts?.optional) {
+    envValue = process.env[envVar];
+  } else {
+    envValue = requireEnvVar(envVar);
+  }
+
+  let resolvedValue;
+
+  if (converter) {
+    try {
+      resolvedValue = envValue ? converter(envValue) : undefined;
+    } catch (error) {
+      throw new Error(
+        `Error resolving environment variable ${envVar}, ${error}`
+      );
+    }
+  } else {
+    resolvedValue = envValue;
+  }
+
+  return resolvedValue;
 }
 
 /**
@@ -78,6 +82,13 @@ export const requireEnvVar = (key: string) => {
   return process.env[key];
 };
 
+/**
+ * Parses a string to a number.
+ *
+ * @param value - The string to parse.
+ * @returns The parsed number.
+ * @throws Will throw an error if the string is not a valid number.
+ */
 export const num = (value: string) => {
   const num = Number(value);
   if (isNaN(num)) {
@@ -86,6 +97,13 @@ export const num = (value: string) => {
   return num;
 };
 
+/**
+ * Parses a string to a boolean.
+ *
+ * @param value - The string to parse.
+ * @returns The parsed boolean.
+ * @throws Will throw an error if the string is not a valid boolean.
+ */
 export const bool = (value: string) => {
   if (value === "true") {
     return true;
