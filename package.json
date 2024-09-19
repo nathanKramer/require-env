@@ -2,6 +2,7 @@
   "name": "@nathankramer/require-env",
   "version": "0.0.1",
   "description": "Easily create config objects from environment variables",
+  "repository": "https://github.com/nathankramer/require-env",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
