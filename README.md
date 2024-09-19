@@ -5,7 +5,7 @@ Allows you to easily create config objects from environment variables.
 Values are required by default.
 
 ```ts
-import { requireEnv, num, bool } from 'require-env';
+import { requireEnv, num, bool } from '@nathan.kramer/require-env';
 
 const config = requireEnv({
   someString: "REQUIRED_STRING_VALUE",
