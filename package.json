@@ -2,9 +2,12 @@
   "name": "@nathankramer/require-env",
   "version": "0.0.1",
   "description": "Easily create config objects from environment variables",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest"
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
   },
   "author": "",
   "license": "ISC",

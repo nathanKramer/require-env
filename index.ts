@@ -32,6 +32,7 @@ export function requireEnv<T extends EnvConfig>(
       const [envVar, opts] = value;
 
       const converter = typeof opts === "function" ? opts : opts?.parser;
+
       let envValue;
 
       if (typeof opts === "object" && opts?.optional) {
