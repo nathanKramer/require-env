@@ -4,17 +4,6 @@ Allows you to easily create config objects from environment variables.
 
 Values are required by default.
 
-```ts
-import { requireEnv, num, bool } from '@nathan.kramer/require-env';
-
-const config = requireEnv({
-  someString: "REQUIRED_STRING_VALUE",
-  someNum: ["REQUIRED_NUMBER_VALUE", num],
-  someBool: ["REQUIRED_BOOLEAN_VALUE", bool],
-  someOptionalValue: ["OPTIONAL_VALUE", { parser: bool, optional: true }],
-})
-```
-
 E.g getting DB credentials:
 
 ```ts
@@ -25,4 +14,45 @@ const config = requireEnv({
   database: "DB_NAME",
   port: ["DB_PORT", num],
 })
+```
 
+## Install
+
+```
+npm install @nathan.kramer/require-env
+```
+
+## Usage
+
+### Getting a single value
+
+```ts
+import { requireEnvVar } from '@nathan.kramer/require-env';
+
+const value = requireEnvVar("SOME_ENV_VAR");
+```
+
+### Creating a config object
+
+```ts
+import { requireEnv } from '@nathan.kramer/require-env';
+
+const config = requireEnv({
+  someString: "REQUIRED_STRING_VALUE",
+  someNum: ["REQUIRED_NUMBER_VALUE", parseInt],
+  someOptionalValue: ["OPTIONAL_VALUE", { parser: Boolean, optional: true }],
+})
+```
+
+### Built-in parsers for convenience
+
+These are just for convenience. They will error on invalid values.
+
+```ts
+import { requireEnv, num, bool } from '@nathan.kramer/require-env';
+
+const config = requireEnv({
+  someNum: ["REQUIRED_NUMBER_VALUE", num],
+  someBool: ["REQUIRED_BOOLEAN_VALUE", bool],
+})
+```
