@@ -1,17 +1,21 @@
 {
-  "name": "@nathankramer/require-env",
-  "version": "0.0.1",
+  "name": "@nathan.kramer/require-env",
+  "version": "0.0.2",
   "description": "Easily create config objects from environment variables",
-  "repository": "https://github.com/nathankramer/require-env",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathankramer/require-env.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "lint": "eslint index.ts",
     "prepublishOnly": "npm run build"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nathan Kramer",
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/jest": "^29.5.13",
