@@ -12,7 +12,7 @@ const config = requireEnv({
   user: "DB_USER",
   password: "DB_PASS",
   database: "DB_NAME",
-  port: ["DB_PORT", num],
+  port: ["DB_PORT", positiveInteger],
 })
 ```
 
@@ -41,7 +41,7 @@ const config = requireEnv({
   someString: "REQUIRED_STRING_VALUE",
   someNum: ["REQUIRED_NUMBER_VALUE", parseInt],
   someOptionalValue: ["OPTIONAL_VALUE", { parser: Boolean, optional: true }],
-})
+});
 ```
 
 ### Built-in parsers for convenience
@@ -53,6 +53,23 @@ import { requireEnv, num, bool } from '@nathan.kramer/require-env';
 
 const config = requireEnv({
   someNum: ["REQUIRED_NUMBER_VALUE", num],
+  somePositiveInteger: ["REQUIRED_POSITIVE_INTEGER_VALUE", positiveInteger],
   someBool: ["REQUIRED_BOOLEAN_VALUE", bool],
-})
+});
+```
+
+### Default values
+
+```ts
+import { requireEnvVar } from '@nathan.kramer/require-env';
+
+const value = requireEnvVar("SOME_ENV_VAR", "default value");
+```
+
+```ts
+import { requireEnv } from '@nathan.kramer/require-env';
+
+const config = requireEnv({
+  someValue: ["SOME_VALUE", { defaultValue: "default value" }],
+});
 ```

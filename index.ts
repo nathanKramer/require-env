@@ -1,9 +1,13 @@
-type Opts = {
+type Opts<ReturnValue> = {
   optional?: boolean;
-  parser?: (value: string) => unknown;
+  parser?: (value: string) => ReturnValue;
+  defaultValue?: ReturnValue;
 };
 
-type TupleCase = [string, Opts | ((value: string) => unknown) | undefined];
+type TupleCase = [
+  string,
+  Opts<unknown> | ((value: string) => unknown) | undefined,
+];
 
 type EnvConfig = Record<string, string | TupleCase>;
 
@@ -19,7 +23,7 @@ export function requireEnv<T extends EnvConfig>(
 ): {
   [K in keyof T]: T[K] extends [
     string,
-    { parser: (value: string) => infer R } | ((value: string) => infer R),
+    Opts<infer R> | ((value: string) => infer R),
   ]
     ? R
     : string;
@@ -44,9 +48,16 @@ function resolveTupleCase(value: TupleCase) {
   const converter = typeof opts === "function" ? opts : opts?.parser;
 
   let envValue;
+  let defaultValue;
 
-  if (typeof opts === "object" && opts?.optional) {
-    envValue = process.env[envVar];
+  if (typeof opts === "object") {
+    defaultValue = opts?.defaultValue;
+
+    if (opts?.optional || opts?.defaultValue !== undefined) {
+      envValue = process.env[envVar];
+    } else {
+      envValue = requireEnvVar(envVar);
+    }
   } else {
     envValue = requireEnvVar(envVar);
   }
@@ -55,14 +66,14 @@ function resolveTupleCase(value: TupleCase) {
 
   if (converter) {
     try {
-      resolvedValue = envValue ? converter(envValue) : undefined;
+      resolvedValue = envValue ? converter(envValue) : defaultValue;
     } catch (error) {
       throw new Error(
         `Error resolving environment variable ${envVar}, ${error}`
       );
     }
   } else {
-    resolvedValue = envValue;
+    resolvedValue = envValue ?? defaultValue;
   }
 
   return resolvedValue;
@@ -75,12 +86,14 @@ function resolveTupleCase(value: TupleCase) {
  * @returns The value of the environment variable.
  * @throws Will throw an error if the environment variable is not set.
  */
-export const requireEnvVar = (key: string) => {
-  if (!process.env[key]) {
+export function requireEnvVar(key: string): string;
+export function requireEnvVar(key: string, defaultValue: string): string;
+export function requireEnvVar(key: string, defaultValue?: string): string {
+  if (!process.env[key] && defaultValue === undefined) {
     throw new Error(`Environment variable ${key} is not set`);
   }
-  return process.env[key];
-};
+  return process.env[key] ?? defaultValue!;
+}
 
 /**
  * Parses a string to a number.
@@ -93,6 +106,21 @@ export const num = (value: string) => {
   const num = Number(value);
   if (isNaN(num)) {
     throw new Error(`Invalid number: ${value}`);
+  }
+  return num;
+};
+
+/**
+ * Parses a string to a positive integer.
+ *
+ * @param value - The string to parse.
+ * @returns The parsed positive integer.
+ * @throws Will throw an error if the string is not a valid positive integer.
+ */
+export const positiveInteger = (value: string) => {
+  const num = Number(value);
+  if (isNaN(num) || num <= 0 || Math.floor(num) !== num) {
+    throw new Error(`Invalid positive integer: ${value}`);
   }
   return num;
 };
