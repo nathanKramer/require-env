@@ -10,8 +10,8 @@
     "test": "jest",
     "prepublishOnly": "npm run build"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nathan Kramer",
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/jest": "^29.5.13",
