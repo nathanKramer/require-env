@@ -4,10 +4,10 @@ type Opts<ReturnValue> = {
   defaultValue?: ReturnValue;
 };
 
-type TupleCase = [
-  string,
-  Opts<unknown> | ((value: string) => unknown) | string | undefined,
-];
+type TupleCase =
+  | [string, Opts<unknown>]
+  | [string, (value: string) => unknown]
+  | [string, string | undefined];
 
 type EnvConfig = Record<string, string | TupleCase>;
 
