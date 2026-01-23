@@ -12,8 +12,34 @@ type TupleCase =
 type EnvConfig = Record<string, string | TupleCase>;
 
 /**
+ * Require environment variables and produce a structured config object.
+ *
  * Creates an object with the same keys as the input config,
  * but with the values from the environment variables.
+ *
+ * E.g.
+ *
+ * ```ts
+ * const config = requireEnv({
+ *   host: "DB_HOST",
+ *   user: "DB_USER",
+ *   password: "DB_PASS",
+ *   database: "DB_NAME",
+ *   port: ["DB_PORT", positiveInteger],
+ * });
+ * ```
+ *
+ * Will produce an object with the following keys:
+ *
+ * ```ts
+ * {
+ *   host: string,
+ *   user: string,
+ *   password: string,
+ *   database: string,
+ *   port: number,
+ * }
+ * ```
  *
  * @param config - The configuration object with environment variable keys.
  * @returns An object with the same keys as the input config, but with values from the environment variables.
